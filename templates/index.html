@@ -1,0 +1,498 @@
+﻿<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Consulta ONPE Web</title>
+  <style>
+    :root {
+      --bg: #eef5fb;
+      --card: rgba(255, 255, 255, 0.95);
+      --primary: #0e4f87;
+      --primary-strong: #0a3d69;
+      --ok: #15803d;
+      --danger: #b91c1c;
+      --warning: #b45309;
+      --muted: #5b6b82;
+      --border: #d7e3f0;
+      --panel: #f8fbff;
+      --shadow: 0 18px 40px rgba(14, 79, 135, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      color: #10233a;
+      background:
+        radial-gradient(circle at top left, rgba(71, 152, 255, 0.16), transparent 34%),
+        radial-gradient(circle at top right, rgba(21, 128, 61, 0.08), transparent 28%),
+        linear-gradient(135deg, #f6fbff 0%, #eef5fb 100%);
+    }
+
+    .wrap {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    .hero, .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .hero {
+      padding: 30px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #e9f3ff;
+      color: var(--primary);
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.05;
+      color: var(--primary);
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 1rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .hero-note {
+      padding: 18px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #f7fbff, #edf5fd);
+      border: 1px solid var(--border);
+    }
+
+    .hero-note strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--primary-strong);
+      font-size: 0.98rem;
+    }
+
+    form {
+      margin-top: 22px;
+    }
+
+    .upload-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .file-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      min-height: 72px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fff;
+    }
+
+    .file-box input[type=file] {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .file-meta {
+      min-width: 220px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: var(--panel);
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .file-meta strong {
+      display: block;
+      color: var(--primary-strong);
+      margin-bottom: 6px;
+    }
+
+    button,
+    .button {
+      border: 0;
+      background: linear-gradient(180deg, var(--primary), var(--primary-strong));
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: 700;
+      min-height: 56px;
+    }
+
+    .button.alt {
+      background: linear-gradient(180deg, #1c8a43, var(--ok));
+    }
+
+    .flash {
+      margin: 0 0 16px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      font-weight: 600;
+      border: 1px solid transparent;
+    }
+
+    .flash.error {
+      background: #fff1f2;
+      color: #9f1239;
+      border-color: #fecdd3;
+    }
+
+    .flash.success {
+      background: #eefbf3;
+      color: #166534;
+      border-color: #bbf7d0;
+    }
+
+    .hint {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: #fffaf0;
+      border: 1px solid #fed7aa;
+      color: #9a3412;
+      font-size: 0.95rem;
+    }
+
+    .job-panel {
+      margin-bottom: 22px;
+      padding: 22px;
+    }
+
+    .job-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .job-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--primary-strong);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.01em;
+    }
+
+    .badge.pending { background: var(--warning); }
+    .badge.processing { background: var(--primary); }
+    .badge.completed { background: var(--ok); }
+    .badge.error { background: var(--danger); }
+    .badge.si { background: var(--ok); }
+    .badge.no { background: #d7263d; }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .summary .card {
+      padding: 18px;
+    }
+
+    .summary strong {
+      display: block;
+      font-size: 1.55rem;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+
+    .summary span { color: var(--muted); }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: 16px 0 8px;
+    }
+
+    .list {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .card.record {
+      padding: 20px;
+    }
+
+    .record-header {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .record-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #10233a;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .field {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      min-height: 92px;
+    }
+
+    .field b {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+
+    .jobs-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .job-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.88);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .job-item strong { color: var(--primary-strong); }
+    .job-item span { color: var(--muted); }
+
+    .worker-box {
+      margin-top: 12px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: #f7fbff;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    code {
+      padding: 2px 6px;
+      border-radius: 8px;
+      background: #edf5fd;
+      color: var(--primary-strong);
+      font-size: 0.95em;
+    }
+
+    @media (max-width: 860px) {
+      .hero-grid,
+      .upload-row,
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .file-meta { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">Web dockerizada y worker local ligero</div>
+          <h1>Consulta ONPE Web</h1>
+          <p>La web en Docker ahora solo recibe el Excel, administra trabajos y entrega el archivo final. La consulta ONPE se hace fuera del contenedor con un worker local que usa tu navegador real.</p>
+        </div>
+        <div class="hero-note">
+          <strong>Nuevo flujo</strong>
+          <p>1. Sube el archivo. 2. Ejecuta <code>python worker_host.py</code> en tu maquina. 3. Cuando termine, vuelve a esta pagina y descarga el Excel actualizado.</p>
+        </div>
+      </div>
+
+      <form action="{{ url_for('procesar') }}" method="post" enctype="multipart/form-data">
+        <div class="upload-row">
+          <div class="file-box">
+            <input id="excel_file" type="file" name="excel_file" accept=".xlsx" required>
+            <div class="file-meta">
+              <strong id="file-name">Ningun archivo seleccionado</strong>
+              <span>Maximo recomendado: {{ max_upload_mb }} MB</span>
+            </div>
+          </div>
+          <button type="submit">Crear trabajo</button>
+        </div>
+      </form>
+
+      <div class="hint">
+        Esta arquitectura baja mucho el peso de la imagen Docker porque el navegador ya no va dentro del contenedor.
+      </div>
+    </section>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if job %}
+      <section class="card job-panel" data-job-id="{{ job['id'] }}" data-status="{{ job['status'] }}">
+        <div class="job-header">
+          <div>
+            <div class="job-title">Trabajo {{ job['id'] }}</div>
+            <p>Archivo: <strong>{{ job['original_name'] }}</strong></p>
+          </div>
+          <span class="badge {{ job['status'] }}">{{ job['status']|upper }}</span>
+        </div>
+
+        <div class="worker-box">
+          <strong>Estado actual:</strong> {{ job['message'] }}
+        </div>
+
+        {% if job['status'] in ['pending', 'processing'] %}
+          <div class="worker-box">
+            Ejecuta este comando en tu maquina host para procesar el trabajo:
+            <br><br>
+            <code>python worker_host.py --server http://localhost:8000</code>
+          </div>
+        {% endif %}
+
+        {% if job['status'] == 'completed' %}
+          <section class="summary">
+            <div class="card"><strong>{{ job['total'] }}</strong><span>Registros procesados</span></div>
+            <div class="card"><strong>{{ job['errors'] }}</strong><span>Errores</span></div>
+            <div class="card"><strong>{{ job['elapsed'] }}</strong><span>Tiempo total</span></div>
+          </section>
+
+          <div class="actions">
+            <a class="button alt" href="{{ url_for('descargar', job_id=job['id']) }}">Descargar Excel actualizado</a>
+          </div>
+
+          {% if job['records'] %}
+            <section class="list">
+              {% for record in job['records'] %}
+                {% set badge = record.get('miembro_de_mesa', '') or record.get('estado', 'pendiente') %}
+                <article class="card record">
+                  <div class="record-header">
+                    <span class="badge {{ badge }}">MIEMBRO DE MESA: {{ badge|upper }}</span>
+                    <div class="record-title">DNI: {{ record['dni'] }}</div>
+                  </div>
+                  <div class="grid">
+                    <div class="field"><b>Ubicacion</b>{{ record.get('ubicacion', '-') or '-' }}</div>
+                    <div class="field"><b>Direccion</b>{{ record.get('direccion', '-') or '-' }}</div>
+                  </div>
+                  {% if record.get('detalle_error') %}
+                    <div class="field" style="margin-top:12px;"><b>Detalle</b>{{ record['detalle_error'] }}</div>
+                  {% endif %}
+                </article>
+              {% endfor %}
+            </section>
+          {% endif %}
+        {% elif job['status'] == 'error' %}
+          <div class="flash error" style="margin-top:16px;">{{ job['message'] }}</div>
+        {% endif %}
+      </section>
+    {% endif %}
+
+    {% if jobs %}
+      <section>
+        <div class="job-title" style="margin-bottom:12px;">Trabajos recientes</div>
+        <div class="jobs-list">
+          {% for item in jobs %}
+            <a class="job-item" href="{{ url_for('index', job_id=item['id']) }}">
+              <div>
+                <strong>{{ item['original_name'] }}</strong>
+                <br>
+                <span>{{ item['id'] }} | {{ item['updated_at'] }}</span>
+              </div>
+              <span class="badge {{ item['status'] }}">{{ item['status']|upper }}</span>
+            </a>
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
+  </div>
+
+  <script>
+    const fileInput = document.getElementById('excel_file');
+    const fileName = document.getElementById('file-name');
+    const panel = document.querySelector('[data-job-id]');
+
+    if (fileInput) {
+      fileInput.addEventListener('change', () => {
+        const currentFile = fileInput.files && fileInput.files[0];
+        fileName.textContent = currentFile ? currentFile.name : 'Ningun archivo seleccionado';
+      });
+    }
+
+    if (panel) {
+      const jobId = panel.dataset.jobId;
+      const status = panel.dataset.status;
+      if (status === 'pending' || status === 'processing') {
+        setTimeout(() => {
+          window.location.href = `/?job_id=${jobId}`;
+        }, 5000);
+      }
+    }
+  </script>
+</body>
+</html>

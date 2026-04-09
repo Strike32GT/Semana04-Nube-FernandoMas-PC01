@@ -1,3 +1,5 @@
-customtkinter
-pandas
+﻿customtkinter
 openpyxl
+playwright
+flask
+requests
