@@ -84,12 +84,24 @@ En la misma carpeta del proyecto, ejecuta:
 docker build --no-cache -f Dockerfile.optimizado -t pc01-fernandomas-web:optimizado .
 ```
 
+Si prefieres descargar la imagen ya publicada desde Docker Hub, usa:
+
+```powershell
+docker pull strike32dk/pc01-fernandomas-web:optimizado
+```
+
 ### 3. Ejecutar la web dockerizada
 
 Abre una terminal y ejecuta:
 
 ```powershell
 docker run --rm -it -p 8000:8000 pc01-fernandomas-web:optimizado
+```
+
+Si descargaste la imagen desde Docker Hub, ejecutala asi:
+
+```powershell
+docker run --rm -it -p 8000:8000 strike32dk/pc01-fernandomas-web:optimizado
 ```
 
 Deja esa terminal abierta.
